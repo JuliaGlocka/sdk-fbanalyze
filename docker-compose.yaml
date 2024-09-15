@@ -9,3 +9,14 @@ services:
       build: api-fbanalyze/
       ports:
         - "7000:5000"
+    
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        ports:
+          - "27017:27017"
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        volumes:
+          - ./mongodb:/data/db
