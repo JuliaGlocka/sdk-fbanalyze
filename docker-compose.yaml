@@ -1,0 +1,6 @@
+services:
+    api-eventlogger:
+      build: api-eventlogger/
+      ports:
+        - "5000:5000"
+
