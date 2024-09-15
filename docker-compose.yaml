@@ -1,6 +1,11 @@
 services:
+
     api-eventlogger:
       build: api-eventlogger/
       ports:
         - "5000:5000"
 
+    api-fbanalyze:
+      build: api-fbanalyze/
+      ports:
+        - "7000:5000"
