@@ -1,59 +1,59 @@
 services:
 
-    api-eventlogger:
-      build: api-eventlogger/
-      ports:
-        - "5000:5000"
+  api-eventlogger:
+    build: api-eventlogger/
+    ports:
+      - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-eventlogger.rule=Host(`eventlogger.localhost`)"
+      - "traefik.http.routers.api-eventlogger.entrypoints=web"
 
-    api-fbanalyze:
-      build: api-fbanalyze/
-      ports:
-        - "7000:5000"
-    
-    mongo:
-        image: mongo
-        container_name: mongo
-        ports:
-          - "27017:27017"
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
-        volumes:
-          - ./mongo:/data/db
+  api-fbanalyze:
+    build: api-fbanalyze/
+    ports:
+      - "7000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-fbanalyze.rule=Host(`fbanalyze.localhost`)"
+      - "traefik.http.routers.api-fbanalyze.entrypoints=web"
 
-    mongo-express:
-        image: mongo-express
-        restart: always
-        ports:
-          - 8081:8081
-        environment:
-          ME_CONFIG_MONGODB_ADMINUSERNAME: root
-          ME_CONFIG_MONGODB_ADMINPASSWORD: example
-          ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-          ME_CONFIG_BASICAUTH: false
-        depends_on:
-          - mongo
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - ./mongo:/data/db
 
-    traefik:
-        image: "traefik:v3.1"
-        container_name: "traefik"
-        command:
-          - "--log.level=DEBUG"
-          - "--api.insecure=true"
-          - "--providers.docker=true"
-          - "--providers.docker.exposedbydefault=false"
-          - "--entryPoints.web.address=:80"
-        ports:
-          - "80:80"
-          - "8080:8080"
-        volumes:
-          - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongo
 
-    fbanalyze:
-        image: "traefik/whoami"
-        container_name: "simple-service"
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.fbanalyze.rule=Host(`fbanalyze.localhost`)"
-          - "traefik.http.routers.fbanalyze.entrypoints=web"
+  traefik:
+    image: "traefik:v3.1"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
